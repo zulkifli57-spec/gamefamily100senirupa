@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDU FAMILY 100 SHOWDOWN - Seni Rupa Kelas VI SD</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome CDN for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts: Inter & Outfit for Gamified Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Canvas Confetti CDN for Victory Celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at center, #1e1b4b 0%, #0f172a 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .font-display {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* 3D Flip Card Animation Styles */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .card-inner.is-flipped {
+            transform: rotateX(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #1d4ed8 100%);
+            border: 2px solid #60a5fa;
+            color: white;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border: 2px solid #fef08a;
+            color: #0f172a;
+            transform: rotateX(180deg);
+        }
+
+        /* Glowing text effects */
+        .text-glow-yellow {
+            text-shadow: 0 0 12px rgba(252, 211, 77, 0.8), 0 0 20px rgba(245, 158, 11, 0.5);
+        }
+
+        .text-glow-blue {
+            text-shadow: 0 0 12px rgba(96, 165, 250, 0.8), 0 0 20px rgba(37, 99, 235, 0.5);
+        }
+
+        /* Custom Pulse Keyframe for Active Team */
+        @keyframes borderPulse {
+            0%, 100% { border-color: #f59e0b; box-shadow: 0 0 15px rgba(245, 158, 11, 0.6); }
+            50% { border-color: #fef08a; box-shadow: 0 0 25px rgba(250, 204, 21, 0.9); }
+        }
+
+        .active-team-card {
+            animation: borderPulse 2s infinite;
+        }
+
+        /* Animated X Strike Overlay */
+        @keyframes strikePop {
+            0% { transform: scale(0.2) rotate(-15deg); opacity: 0; }
+            50% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .strike-animation {
+            animation: strikePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <div id="welcome-screen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
+        <div class="max-w-2xl w-full bg-slate-900 border-2 border-amber-500/50 rounded-3xl p-6 md:p-10 shadow-2xl text-center space-y-6 relative overflow-hidden">
+            <div class="absolute -right-16 -top-16 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute -left-16 -bottom-16 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl"></div>
+
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm font-semibold tracking-wide">
+                <i class="fa-solid fa-palette text-amber-400"></i> SENI RUPA KELAS VI SD
+            </div>
+
+            <div>
+                <h1 class="text-4xl md:text-5xl font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500 tracking-tight leading-tight uppercase text-glow-yellow">
+                    EDU FAMILY 100
+                </h1>
+                <p class="text-xl md:text-2xl font-bold text-blue-400 tracking-wider mt-1 uppercase">SHOWDOWN</p>
+                <p class="text-slate-400 text-sm md:text-base mt-2">Uji pemahaman Unsur-Unsur Seni Rupa secara interaktif dan seru bersama kelompokmu!</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left bg-slate-950/60 p-4 md:p-6 rounded-2xl border border-slate-800">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nama Tim 1</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-users absolute left-3 top-1/2 -translate-y-1/2 text-rose-500"></i>
+                        <input type="text" id="input-team1" value="Tim Merah" class="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl font-bold text-white focus:outline-none focus:border-rose-500 transition-colors">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nama Tim 2</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-users absolute left-3 top-1/2 -translate-y-1/2 text-blue-500"></i>
+                        <input type="text" id="input-team2" value="Tim Biru" class="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl font-bold text-white focus:outline-none focus:border-blue-500 transition-colors">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <button onclick="startGame()" class="w-full py-4 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xl rounded-2xl shadow-lg shadow-amber-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-play text-slate-950"></i> MULAI PERMAINAN
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <header class="bg-slate-900/90 border-b border-slate-800 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-md">
+                    <i class="fa-solid fa-gamepad"></i>
+                </div>
+                <div>
+                    <h2 class="font-display font-black text-lg text-white leading-none">EDU FAMILY 100</h2>
+                    <p class="text-xs text-amber-400 font-semibold mt-0.5">Seni Rupa Kelas VI SD</p>
+                </div>
+            </div>
+
+            <!-- Round Counter Header -->
+            <div class="bg-slate-950 px-4 py-1.5 rounded-full border border-slate-800 flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ronde</span>
+                <span id="current-round-badge" class="font-display font-black text-amber-400 text-lg">1 / 10</span>
+            </div>
+
+            <button onclick="resetGameModal()" class="px-3 py-1.5 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors flex items-center gap-1.5">
+                <i class="fa-solid fa-rotate-right"></i> <span class="hidden sm:inline">Reset</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-6 flex-1 flex flex-col justify-between gap-6 w-full">
+        
+        <!-- Team Scores Bar -->
+        <div class="grid grid-cols-2 gap-4 md:gap-8">
+            <!-- Team 1 Card -->
+            <div id="team1-card" class="bg-slate-900/80 border-2 border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between transition-all duration-300 relative overflow-hidden">
+                <div class="flex items-center gap-3 text-center sm:text-left">
+                    <div class="w-12 h-12 rounded-xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400 font-bold text-xl shrink-0">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <div id="display-team1-name" class="font-display font-black text-base sm:text-xl text-white truncate max-w-[120px] sm:max-w-[180px]">Tim Merah</div>
+                        <span id="turn-badge-1" class="hidden inline-flex items-center gap-1 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-500 text-slate-950 mt-1">GILIRAN MAIN</span>
+                    </div>
+                </div>
+                <div class="mt-2 sm:mt-0 text-center sm:text-right">
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">SKOR</div>
+                    <div id="score-team1" class="font-display font-black text-3xl sm:text-4xl text-rose-400 leading-none">0</div>
+                </div>
+            </div>
+
+            <!-- Team 2 Card -->
+            <div id="team2-card" class="bg-slate-900/80 border-2 border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between transition-all duration-300 relative overflow-hidden">
+                <div class="flex items-center gap-3 text-center sm:text-left">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 font-bold text-xl shrink-0">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <div id="display-team2-name" class="font-display font-black text-base sm:text-xl text-white truncate max-w-[120px] sm:max-w-[180px]">Tim Biru</div>
+                        <span id="turn-badge-2" class="hidden inline-flex items-center gap-1 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-500 text-slate-950 mt-1">GILIRAN MAIN</span>
+                    </div>
+                </div>
+                <div class="mt-2 sm:mt-0 text-center sm:text-right">
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">SKOR</div>
+                    <div id="score-team2" class="font-display font-black text-3xl sm:text-4xl text-blue-400 leading-none">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question Banner -->
+        <div class="bg-slate-900 border-2 border-amber-500/40 rounded-2xl p-5 shadow-xl text-center relative">
+            <div class="text-xs font-extrabold text-amber-400 uppercase tracking-widest mb-1">
+                <i class="fa-solid fa-circle-question"></i> Pertanyaan Survei
+            </div>
+            <h2 id="question-text" class="text-lg md:text-2xl font-bold text-white font-display leading-snug">
+                Loading Pertanyaan...
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 gap-3 max-w-3xl mx-auto w-full" id="survey-board">
+            <!-- 5 Answer Cards will be injected dynamically -->
+        </div>
+
+        <!-- Strikes Display Indicator -->
+        <div class="flex items-center justify-center gap-4 py-2">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Kesempatan Salah (Strikes):</span>
+            <div class="flex items-center gap-2" id="strikes-container">
+                <div class="w-10 h-10 rounded-xl bg-slate-900 border-2 border-slate-800 flex items-center justify-center text-slate-700 text-xl font-black">X</div>
+                <div class="w-10 h-10 rounded-xl bg-slate-900 border-2 border-slate-800 flex items-center justify-center text-slate-700 text-xl font-black">X</div>
+                <div class="w-10 h-10 rounded-xl bg-slate-900 border-2 border-slate-800 flex items-center justify-center text-slate-700 text-xl font-black">X</div>
+            </div>
+        </div>
+
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 md:p-6 shadow-xl space-y-4 max-w-3xl mx-auto w-full">
+            <!-- Answer Input Form -->
+            <form onsubmit="handleAnswerSubmit(event)" class="flex flex-col sm:flex-row gap-3">
+                <input type="text" id="answer-input" placeholder="Ketikkan jawaban tebakan siswa di sini..." autocomplete="off" class="flex-1 bg-slate-950 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-white text-base font-semibold focus:outline-none placeholder-slate-500 transition-colors">
+                <button type="submit" class="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 shadow-md">
+                    <i class="fa-solid fa-paper-plane"></i> CEK JAWABAN
+                </button>
+            </form>
+
+            <!-- Facilitator Action Buttons -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800 text-xs">
+                <div class="flex items-center gap-2">
+                    <button onclick="registerStrike()" class="px-3.5 py-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/40 rounded-xl font-bold transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-xmark"></i> Tambah Strike (Salah)
+                    </button>
+                    <button onclick="switchTurn()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-xl font-bold transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-rotate-right"></i> Beralih Giliran Tim
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-2 ml-auto">
+                    <button onclick="revealAllAnswers()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 rounded-xl font-bold transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-eye"></i> Buka Semua Jawaban
+                    </button>
+                    <button onclick="nextRound()" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-extrabold shadow-md transition-all flex items-center gap-1.5">
+                        <span>Ronde Berikutnya</span> <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="strike-modal" class="fixed inset-0 z-50 pointer-events-none hidden flex items-center justify-center">
+        <div class="bg-red-600/90 text-white rounded-3xl p-8 border-4 border-white shadow-2xl flex items-center justify-center strike-animation">
+            <span class="font-display font-black text-9xl tracking-tighter drop-shadow-lg">X</span>
+        </div>
+    </div>
+
+    <div id="final-screen" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-md">
+        <div class="max-w-2xl w-full bg-slate-900 border-2 border-amber-500 rounded-3xl p-6 md:p-10 shadow-2xl text-center space-y-6">
+            <div class="w-20 h-20 bg-amber-500/20 border-2 border-amber-500 rounded-full flex items-center justify-center text-amber-400 text-4xl mx-auto shadow-lg shadow-amber-500/20">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+
+            <div>
+                <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">PERMAINAN SELESAI</span>
+                <h2 id="winner-title" class="text-3xl md:text-5xl font-black font-display text-white mt-1">TIM MERAH MENANG!</h2>
+                <p id="winner-subtitle" class="text-slate-400 text-sm md:text-base mt-2">Selamat atas pemahaman luar biasa tentang Unsur Seni Rupa!</p>
+            </div>
+
+            <!-- Final Scores Summary Table -->
+            <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ringkasan Skor Akhir</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                        <div id="final-team1-name" class="font-bold text-slate-300 truncate">Tim Merah</div>
+                        <div id="final-team1-score" class="font-display font-black text-3xl text-rose-400 mt-1">0</div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                        <div id="final-team2-name" class="font-bold text-slate-300 truncate">Tim Biru</div>
+                        <div id="final-team2-score" class="font-display font-black text-3xl text-blue-400 mt-1">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="restartGame()" class="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-lg rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-rotate-right"></i> MAIN LAGI
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Web Audio API Synthesizer for SFX
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // SFX Correct / Ding Sound
+        function playSoundDing() {
+            initAudio();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc1.type = 'sine';
+            osc2.type = 'sine';
+
+            osc1.frequency.setValueAtTime(523.25, now); // C5
+            osc1.frequency.setValueAtTime(659.25, now + 0.12); // E5
+
+            osc2.frequency.setValueAtTime(1046.50, now); // C6
+            osc2.frequency.setValueAtTime(1318.51, now + 0.12); // E6
+
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc1.start(now);
+            osc2.start(now);
+            osc1.stop(now + 0.6);
+            osc2.stop(now + 0.6);
+        }
+
+        // SFX Wrong / Buzz Sound
+        function playSoundBuzz() {
+            initAudio();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(130, now); // Low buzz
+            osc.frequency.setValueAtTime(110, now + 0.15);
+
+            gain.gain.setValueAtTime(0.4, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.5);
+        }
+
+        // SFX Flip Card Swoosh
+        function playSoundFlip() {
+            initAudio();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(200, now);
+            osc.frequency.exponentialRampToValueAtTime(800, now + 0.15);
+
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.15);
+        }
+
+        // SFX Fanfare Victory Sound
+        function playSoundVictory() {
+            initAudio();
+            if (!audioCtx) return;
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C, E, G, C
+            notes.forEach((freq, idx) => {
+                const now = audioCtx.currentTime + (idx * 0.12);
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, now);
+
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.4);
+            });
+        }
+    </script>
+
+    <script>
+        // Question Bank for Grade 6 SD Art (Seni Rupa)
+        const questionBank = [
+          {
+            id: 1,
+            question: "Sebutkan jenis-jenis garis yang sering digunakan dalam menggambar seni rupa!",
+            answers: [
+              { rank: 1, text: "Garis Lurus", points: 100, keywords: ["lurus", "horizontal", "vertikal", "tegak", "mendatar"] },
+              { rank: 2, text: "Garis Lengkung", points: 80, keywords: ["lengkung", "melengkung", "kurva", "busur"] },
+              { rank: 3, text: "Garis Zig-zag", points: 60, keywords: ["zigzag", "zig-zag", "patah", "patah-patah", "gergaji"] },
+              { rank: 4, text: "Garis Gelombang", points: 40, keywords: ["gelombang", "ombak", "bergelombang", "spiral"] },
+              { rank: 5, text: "Garis Putus-putus", points: 20, keywords: ["putus", "titik-titik", "dash", "dotted"] }
+            ]
+          },
+          {
+            id: 2,
+            question: "Sebutkan contoh warna primer (warna dasar) atau sekunder yang paling kamu ketahui!",
+            answers: [
+              { rank: 1, text: "Merah", points: 100, keywords: ["merah", "red"] },
+              { rank: 2, text: "Kuning", points: 80, keywords: ["kuning", "yellow"] },
+              { rank: 3, text: "Biru", points: 60, keywords: ["biru", "blue"] },
+              { rank: 4, text: "Hijau", points: 40, keywords: ["hijau", "green"] },
+              { rank: 5, text: "Jingga / Oranye", points: 20, keywords: ["oranye", "orange", "jingga"] }
+            ]
+          },
+          {
+            id: 3,
+            question: "Sebutkan contoh bentuk geometris 2 dimensi dalam unsur seni rupa!",
+            answers: [
+              { rank: 1, text: "Persegi / Kotak", points: 100, keywords: ["persegi", "kotak", "bujur sangkar", "square"] },
+              { rank: 2, text: "Lingkaran", points: 80, keywords: ["lingkaran", "bulat", "circle"] },
+              { rank: 3, text: "Segitiga", points: 60, keywords: ["segitiga", "triangle"] },
+              { rank: 4, text: "Persegi Panjang", points: 40, keywords: ["persegi panjang", "persegi-panjang", "rectangle"] },
+              { rank: 5, text: "Trapesium / Belah Ketupat", points: 20, keywords: ["trapesium", "ketupat", "layang", "oval", "elips"] }
+            ]
+          },
+          {
+            id: 4,
+            question: "Sebutkan contoh benda yang memiliki permukaan bertekstur kasar!",
+            answers: [
+              { rank: 1, text: "Batu", points: 100, keywords: ["batu", "batuan", "kerikil"] },
+              { rank: 2, text: "Batang Pohon / Kayu", points: 80, keywords: ["pohon", "pohon kayu", "batang", "kulit kayu"] },
+              { rank: 3, text: "Ampelas / Amplas", points: 60, keywords: ["amplas", "ampelas", "kertas pasir"] },
+              { rank: 4, text: "Kain Sapi / Kerajinan Kulit / Karung", points: 40, keywords: ["karung", "goni", "kulit", "ban"] },
+              { rank: 5, text: "Dinding Semen Kasar", points: 20, keywords: ["tembok", "dinding", "sembran", "semen"] }
+            ]
+          },
+          {
+            id: 5,
+            question: "Sebutkan contoh benda yang memiliki permukaan bertekstur halus!",
+            answers: [
+              { rank: 1, text: "Kaca / Cermin", points: 100, keywords: ["kaca", "cermin", "glass"] },
+              { rank: 2, text: "Kertas", points: 80, keywords: ["kertas", "hvs", "buku"] },
+              { rank: 3, text: "Kain Sutra / Baju", points: 60, keywords: ["kain", "sutra", "baju", "pakaian"] },
+              { rank: 4, text: "Keramik / Lantai", points: 40, keywords: ["keramik", "lantai", "ubin", "porselen"] },
+              { rank: 5, text: "Layar HP / Tablet", points: 20, keywords: ["hp", "layar", "screen", "smartphone", "plastik"] }
+            ]
+          },
+          {
+            id: 6,
+            question: "Bagaimana cara membuat efek Gelap-Terang (pencahayaan) pada gambar 2D?",
+            answers: [
+              { rank: 1, text: "Arsir (Mengarsir)", points: 100, keywords: ["arsir", "mengarsir", "garis arsir"] },
+              { rank: 2, text: "Dusel / Menggosok Pensil", points: 80, keywords: ["dusel", "gosok", "menggosok", "dusel pensil"] },
+              { rank: 3, text: "Mewarnai Tua dan Muda (Gradasi)", points: 60, keywords: ["gradasi", "tua muda", "pencampuran warna", "degradasi"] },
+              { rank: 4, text: "Pointilis (Titik-titik)", points: 40, keywords: ["titik", "pointilisme", "pointilis", "titik-titik"] },
+              { rank: 5, text: "Menentukan Arah Bayangan / Cahaya", points: 20, keywords: ["bayangan", "cahaya", "arah cahaya", "shadow"] }
+            ]
+          },
+          {
+            id: 7,
+            question: "Sebutkan benda 3 dimensi di sekitar kita yang memiliki unsur bentuk 'Ruang'!",
+            answers: [
+              { rank: 1, text: "Patung", points: 100, keywords: ["patung", "statue"] },
+              { rank: 2, text: "Gelas / Botol", points: 80, keywords: ["gelas", "botol", "cangkir", "wadah"] },
+              { rank: 3, text: "Kotak / Dus / Lemari", points: 60, keywords: ["kotak", "kardus", "lemari", "dus", "box"] },
+              { rank: 4, text: "Bola / Vas Bunga", points: 40, keywords: ["bola", "vas", "vas bunga", "guci"] },
+              { rank: 5, text: "Gedung / Rumah", points: 20, keywords: ["gedung", "rumah", "bangunan"] }
+            ]
+          },
+          {
+            id: 8,
+            question: "Sebutkan perasaan / kesan yang bisa diciptakan oleh Warna Panas (Merah, Kuning, Oranye)!",
+            answers: [
+              { rank: 1, text: "Semangat / Enerjik", points: 100, keywords: ["semangat", "enerjik", "gembira", "ceria"] },
+              { rank: 2, text: "Panas / Hangat", points: 80, keywords: ["panas", "hangat", "api"] },
+              { rank: 3, text: "Marah / Berani", points: 60, keywords: ["marah", "berani", "bahaya"] },
+              { rank: 4, text: "Ceria / Bahagia", points: 40, keywords: ["ceria", "senang", "bahagia"] },
+              { rank: 5, text: "Terang / Menyolok", points: 20, keywords: ["terang", "mencolok", "menyolok"] }
+            ]
+          },
+          {
+            id: 9,
+            question: "Sebutkan alat atau media yang digunakan untuk membuat unsur 'Warna' pada karya seni rupa!",
+            answers: [
+              { rank: 1, text: "Pensil Warna", points: 100, keywords: ["pensil warna", "pensil-warna"] },
+              { rank: 2, text: "Krayon (Crayon) / Pas-tel", points: 80, keywords: ["krayon", "crayon", "pastel"] },
+              { rank: 3, text: "Cat Air", points: 60, keywords: ["cat air", "watercolor"] },
+              { rank: 4, text: "Spidol Warna", points: 40, keywords: ["spidol", "marker"] },
+              { rank: 5, text: "Cat Minyak / Cat Akrilik", points: 20, keywords: ["cat minyak", "akrilik", "cat tembok", "cat"] }
+            ]
+          },
+          {
+            id: 10,
+            question: "Sebutkan bentuk-bentuk organik (alami) yang sering ditemukan dalam seni rupa!",
+            answers: [
+              { rank: 1, text: "Daun / Bunga", points: 100, keywords: ["daun", "bunga", "tanaman", "tumbuhan"] },
+              { rank: 2, text: "Awan / Langit", points: 80, keywords: ["awan", "langit"] },
+              { rank: 3, text: "Hewan / Binatang", points: 60, keywords: ["hewan", "binatang", "ikan", "burung"] },
+              { rank: 4, text: "Batu Alam / Gunung", points: 40, keywords: ["gunung", "batu", "sungai"] },
+              { rank: 5, text: "Manusia / Wajah", points: 20, keywords: ["manusia", "wajah", "orang"] }
+            ]
+          }
+        ];
+
+        let team1Name = "Tim Merah";
+        let team2Name = "Tim Biru";
+        let team1Score = 0;
+        let team2Score = 0;
+        let currentRound = 0; // 0-indexed (0 to 9)
+        let activeTeam = 1; // 1 or 2
+        let currentStrikes = 0;
+        let revealedAnswers = [false, false, false, false, false];
+
+        function startGame() {
+            initAudio();
+            const t1Input = document.getElementById('input-team1').value.trim();
+            const t2Input = document.getElementById('input-team2').value.trim();
+
+            if (t1Input) team1Name = t1Input;
+            if (t2Input) team2Name = t2Input;
+
+            document.getElementById('display-team1-name').innerText = team1Name;
+            document.getElementById('display-team2-name').innerText = team2Name;
+
+            document.getElementById('welcome-screen').classList.add('hidden');
+            
+            currentRound = 0;
+            team1Score = 0;
+            team2Score = 0;
+            activeTeam = 1;
+
+            updateScoreboard();
+            loadRound(currentRound);
+        }
+
+        function loadRound(roundIdx) {
+            if (roundIdx >= questionBank.length) {
+                showFinalVictory();
+                return;
+            }
+
+            currentRound = roundIdx;
+            currentStrikes = 0;
+            revealedAnswers = [false, false, false, false, false];
+
+            document.getElementById('current-round-badge').innerText = `${currentRound + 1} / ${questionBank.length}`;
+            
+            const qData = questionBank[currentRound];
+            document.getElementById('question-text').innerText = qData.question;
+
+            renderSurveyBoard();
+            updateStrikesUI();
+            updateTurnUI();
+            
+            document.getElementById('answer-input').value = '';
+            document.getElementById('answer-input').focus();
+        }
+
+        function renderSurveyBoard() {
+            const board = document.getElementById('survey-board');
+            board.innerHTML = '';
+
+            const qData = questionBank[currentRound];
+
+            qData.answers.forEach((ans, idx) => {
+                const cardWrapper = document.createElement('div');
+                cardWrapper.className = 'h-16 w-full perspective-1000 cursor-pointer';
+                cardWrapper.onclick = () => manualToggleCard(idx);
+
+                const isFlipped = revealedAnswers[idx];
+
+                cardWrapper.innerHTML = `
+                    <div class="card-inner ${isFlipped ? 'is-flipped' : ''}" id="card-inner-${idx}">
+                        <div class="card-front">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-full bg-slate-950/40 border border-blue-300/30 flex items-center justify-center font-black text-amber-300 text-sm">${ans.rank}</span>
+                                <span class="font-bold text-slate-200 tracking-wider">TEBAKAN HASIL SURVEI</span>
+                            </div>
+                            <span class="text-xs font-semibold bg-blue-900/60 text-blue-200 px-2.5 py-1 rounded-md border border-blue-400/30">FAMILY 100</span>
+                        </div>
+                        <div class="card-back">
+                            <span class="font-black text-base md:text-lg text-slate-900 uppercase tracking-tight">${ans.text}</span>
+                            <span class="font-display font-black text-2xl text-slate-950 bg-amber-300 px-3 py-0.5 rounded-lg border border-amber-500 shadow-inner">${ans.points}</span>
+                        </div>
+                    </div>
+                `;
+                board.appendChild(cardWrapper);
+            });
+        }
+
+        function handleAnswerSubmit(e) {
+            e.preventDefault();
+            const inputEl = document.getElementById('answer-input');
+            const rawAnswer = inputEl.value.trim().toLowerCase();
+
+            if (!rawAnswer) return;
+
+            const qData = questionBank[currentRound];
+            let matchedIndex = -1;
+
+            // Fuzzy string matching against text & keywords array
+            qData.answers.forEach((ans, idx) => {
+                if (revealedAnswers[idx]) return; // Skip if already guessed
+
+                const textMatch = ans.text.toLowerCase().includes(rawAnswer);
+                const keywordMatch = ans.keywords.some(kw => {
+                    const cleanKw = kw.toLowerCase();
+                    return rawAnswer.includes(cleanKw) || cleanKw.includes(rawAnswer);
+                });
+
+                if (textMatch || keywordMatch) {
+                    matchedIndex = idx;
+                }
+            });
+
+            if (matchedIndex !== -1) {
+                // Correct Answer Guess!
+                revealAnswer(matchedIndex);
+                inputEl.value = '';
+            } else {
+                // Incorrect Guess -> Strike
+                registerStrike();
+                inputEl.value = '';
+            }
+        }
+
+        function revealAnswer(index) {
+            if (revealedAnswers[index]) return;
+
+            revealedAnswers[index] = true;
+            playSoundFlip();
+            playSoundDing();
+
+            const cardInner = document.getElementById(`card-inner-${index}`);
+            if (cardInner) {
+                cardInner.classList.add('is-flipped');
+            }
+
+            // Award points to active team
+            const points = questionBank[currentRound].answers[index].points;
+            if (activeTeam === 1) {
+                team1Score += points;
+            } else {
+                team2Score += points;
+            }
+
+            updateScoreboard();
+
+            // Check if all cards in current round are opened
+            if (revealedAnswers.every(val => val === true)) {
+                setTimeout(() => {
+                    confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+                }, 400);
+            }
+        }
+
+        function manualToggleCard(index) {
+            if (!revealedAnswers[index]) {
+                revealAnswer(index);
+            }
+        }
+
+        function revealAllAnswers() {
+            questionBank[currentRound].answers.forEach((_, idx) => {
+                if (!revealedAnswers[idx]) {
+                    revealAnswer(idx);
+                }
+            });
+        }
+
+        function registerStrike() {
+            playSoundBuzz();
+            currentStrikes++;
+
+            if (currentStrikes > 3) currentStrikes = 3;
+            updateStrikesUI();
+
+            // Show strike visual overlay modal
+            const modal = document.getElementById('strike-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 800);
+
+            if (currentStrikes >= 3) {
+                // Switch turn automatically after 3 strikes
+                setTimeout(() => {
+                    switchTurn();
+                }, 900);
+            }
+        }
+
+        function updateStrikesUI() {
+            const container = document.getElementById('strikes-container');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= 3; i++) {
+                const strikeBox = document.createElement('div');
+                if (i <= currentStrikes) {
+                    strikeBox.className = 'w-10 h-10 rounded-xl bg-rose-600 border-2 border-rose-400 flex items-center justify-center text-white text-xl font-black shadow-lg shadow-rose-600/40 animate-bounce';
+                    strikeBox.innerText = 'X';
+                } else {
+                    strikeBox.className = 'w-10 h-10 rounded-xl bg-slate-900 border-2 border-slate-800 flex items-center justify-center text-slate-700 text-xl font-black';
+                    strikeBox.innerText = 'X';
+                }
+                container.appendChild(strikeBox);
+            }
+        }
+
+        function switchTurn() {
+            activeTeam = activeTeam === 1 ? 2 : 1;
+            currentStrikes = 0;
+            updateStrikesUI();
+            updateTurnUI();
+        }
+
+        function updateTurnUI() {
+            const card1 = document.getElementById('team1-card');
+            const card2 = document.getElementById('team2-card');
+            const badge1 = document.getElementById('turn-badge-1');
+            const badge2 = document.getElementById('turn-badge-2');
+
+            if (activeTeam === 1) {
+                card1.classList.add('active-team-card');
+                card2.classList.remove('active-team-card');
+                badge1.classList.remove('hidden');
+                badge2.classList.add('hidden');
+            } else {
+                card2.classList.add('active-team-card');
+                card1.classList.remove('active-team-card');
+                badge2.classList.remove('hidden');
+                badge1.classList.add('hidden');
+            }
+        }
+
+        function updateScoreboard() {
+            document.getElementById('score-team1').innerText = team1Score;
+            document.getElementById('score-team2').innerText = team2Score;
+        }
+
+        function nextRound() {
+            loadRound(currentRound + 1);
+        }
+
+        function showFinalVictory() {
+            playSoundVictory();
+
+            document.getElementById('final-team1-name').innerText = team1Name;
+            document.getElementById('final-team2-name').innerText = team2Name;
+            document.getElementById('final-team1-score').innerText = team1Score;
+            document.getElementById('final-team2-score').innerText = team2Score;
+
+            const winnerTitle = document.getElementById('winner-title');
+            const winnerSubtitle = document.getElementById('winner-subtitle');
+
+            if (team1Score > team2Score) {
+                winnerTitle.innerText = `${team1Name.toUpperCase()} MENANG!`;
+                winnerSubtitle.innerText = `Selamat kepada ${team1Name} atas kemenangan gemilang!`;
+            } else if (team2Score > team1Score) {
+                winnerTitle.innerText = `${team2Name.toUpperCase()} MENANG!`;
+                winnerSubtitle.innerText = `Selamat kepada ${team2Name} atas kemenangan gemilang!`;
+            } else {
+                winnerTitle.innerText = "HASIL SERI!";
+                winnerSubtitle.innerText = "Kedua tim memiliki pemahaman unsur seni rupa yang sama hebatnya!";
+            }
+
+            document.getElementById('final-screen').classList.remove('hidden');
+
+            // Launch Confetti Shower
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            })();
+        }
+
+        function restartGame() {
+            document.getElementById('final-screen').classList.add('hidden');
+            document.getElementById('welcome-screen').classList.remove('hidden');
+        }
+
+        function resetGameModal() {
+            if (confirm("Apakah Anda yakin ingin mengulang permainan dari awal?")) {
+                restartGame();
+            }
+        }
+    </script>
+</body>
+</html>
